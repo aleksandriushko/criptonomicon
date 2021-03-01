@@ -79,7 +79,11 @@
           <div
             v-for="ticker in tickers"
             :key="ticker.name"
-            class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer"
+            @click="selectTicker(ticker)"
+            :class="{
+              'border-purple-800': selectedTicker === ticker
+            }"
+            class="bg-white overflow-hidden shadow rounded-lg border-4 border-solid cursor-pointer"
           >
             <div class="px-4 py-5 sm:p-6 text-center">
               <dt class="text-sm font-medium text-gray-500 truncate">
@@ -91,7 +95,7 @@
             </div>
             <div class="w-full border-t border-gray-200"></div>
             <button
-              @click="handleDelete(ticker)"
+              @click.stop="handleDelete(ticker)"
               class="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
             >
               <svg
@@ -112,9 +116,9 @@
         </dl>
         <hr class="w-full border-t border-gray-600 my-4" />
       </template>
-      <section class="relative">
+      <section v-if="selectedTicker" class="relative">
         <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">
-          VUE - USD
+          {{ selectedTicker.name }} - USD
         </h3>
         <div class="flex items-end border-gray-600 border-b border-l h-64">
           <div class="bg-purple-800 border w-10 h-24"></div>
@@ -122,7 +126,11 @@
           <div class="bg-purple-800 border w-10 h-48"></div>
           <div class="bg-purple-800 border w-10 h-16"></div>
         </div>
-        <button type="button" class="absolute top-0 right-0">
+        <button
+          @click="selectedTicker = null"
+          type="button"
+          class="absolute top-0 right-0"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -161,7 +169,8 @@ export default {
         { name: "BTC 1", price: 200 },
         { name: "BTC 2", price: 300 },
         { name: "BTC 3", price: 400 }
-      ]
+      ],
+      selectedTicker: null
     };
   },
 
@@ -178,6 +187,10 @@ export default {
 
     handleDelete(tickerToRemove) {
       this.tickers = this.tickers.filter(t => t !== tickerToRemove);
+    },
+
+    selectTicker(ticker) {
+      this.selectedTicker = ticker;
     }
   }
 };
